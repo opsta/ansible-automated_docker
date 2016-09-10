@@ -1,0 +1,8 @@
+---
+automated_docker_container_default:
+  mongo:
+    image: mongo:3.3.10
+    name: mongo
+    hostname: mongo
+    # published_ports:
+    #  - "27017:27017"

@@ -1,0 +1,63 @@
+---
+- block: # Check and register for nginx configuration file
+
+  - name: Set list of path to look for nginx configuration file
+    set_fact:
+      automated_docker_nginx_host_config_file_paths: "{{ automated_docker_nginx_host_config_file_paths }} + [ '{{ automated_docker_nginx_host_config_file_path }}' ]"
+    with_items: "{{ group_names }}"
+
+  - name: Check if nginx configuration file is exists
+    stat:
+      path: "{{ item }}"
+    register: automated_docker_nginx_config_check
+    with_first_found:
+      - files: "{{ automated_docker_nginx_host_config_file_paths }}"
+        skip: true
+  - name: Set nginx configuration file path
+    set_fact:
+      automated_docker_nginx_config_stat: "{{ automated_docker_nginx_config_check.results[0].stat }}"
+    when: automated_docker_nginx_config_check.results[0].stat is defined
+
+
+- block: # Copy all configuration files to nginx container
+
+  # TODO Still need to delete and recreate directory again until
+  # empty tag is coming here
+  # https://github.com/ansible/ansible-modules-core/issues/902
+  - name: Delete nginx configuration backup directory
+    file:
+      path: "{{ automated_docker_nginx_config_backup_path }}"
+      state: absent
+    delegate_to: "{{ automated_docker_run.name }}"
+    when: |
+      automated_docker_nginx_config_stat is defined and
+      automated_docker_nginx_config_stat.exists == true
+  - name: Create nginx configuration backup directory
+    file:
+      path: "{{ automated_docker_nginx_config_backup_path }}"
+      state: directory
+    delegate_to: "{{ automated_docker_run.name }}"
+    when: |
+      automated_docker_nginx_config_stat is defined and
+      automated_docker_nginx_config_stat.exists == true
+  # Need to use shell because command module doesn't support delegate_to
+  # docker container
+  - name: Backup current nginx configuration file
+    shell: mv {{ automated_docker_nginx_config_path }}/* {{ automated_docker_nginx_config_backup_path }}/
+    delegate_to: "{{ automated_docker_run.name }}"
+    when: |
+      automated_docker_nginx_config_stat is defined and
+      automated_docker_nginx_config_stat.exists == true
+
+  # Need to use docker cp because copy module does not support copy symlink file
+  - name: Copy new nginx configuration file
+    command: |
+      docker cp "{{ automated_docker_nginx_config_stat.path | dirname }}/." \
+      "{{ automated_docker_run.name }}":"{{ automated_docker_nginx_config_path }}"
+    when: |
+      automated_docker_nginx_config_stat is defined and
+      automated_docker_nginx_config_stat.exists == true
+    environment: "{{ automated_docker_machine_environment | default({}) }}"
+    notify: Check nginx configuration and reload nginx
+
+  # TODO Backup and revert if check nginx configuration not passes

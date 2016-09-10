@@ -1,0 +1,61 @@
+---
+- block: # Check and register for influxdb configuration file
+
+  - name: Set list of path to look for influxdb configuration file
+    set_fact:
+      automated_docker_influxdb_host_config_file_paths: "{{ automated_docker_influxdb_host_config_file_paths }} + [ '{{ automated_docker_influxdb_host_config_file_path }}' ]"
+    with_items: "{{ group_names }}"
+
+  - name: Check if influxdb configuration file is exists
+    stat:
+      path: "{{ item }}"
+    register: automated_docker_influxdb_config_check
+    with_first_found:
+      - files: "{{ automated_docker_influxdb_host_config_file_paths }}"
+        skip: true
+  - name: Set influxdb configuration file path
+    set_fact:
+      automated_docker_influxdb_config_stat: "{{ automated_docker_influxdb_config_check.results[0].stat }}"
+    when: automated_docker_influxdb_config_check.results[0].stat is defined
+
+
+- block: # Copy all configuration files to influxdb container
+
+  - name: Install python
+    raw: apk update && apk add python
+    delegate_to: "{{ automated_docker_run.name }}"
+    when: automated_docker_create_result.changed
+
+  - name: Create admin user
+    command: "influx -execute \"
+      CREATE USER {{ automated_docker_influxdb_admin_username }}
+      WITH PASSWORD '{{ automated_docker_influxdb_admin_password }}'
+      WITH ALL PRIVILEGES\""
+    delegate_to: "{{ automated_docker_run.name }}"
+    when: |
+      automated_docker_create_result.changed and
+      automated_docker_influxdb_admin_username is defined and
+      automated_docker_influxdb_admin_password is defined
+
+  - name: Copy influxdb configuration file
+    copy:
+      src: "{{ automated_docker_influxdb_config_stat.path | dirname }}/"
+      dest: "{{ automated_docker_influxdb_config_path }}/"
+    delegate_to: "{{ automated_docker_run.name }}"
+    when: |
+      automated_docker_influxdb_config_stat is defined and
+      automated_docker_influxdb_config_stat.exists == true
+    notify: Restart container
+
+# - block: # Create database
+#
+#   - name: Create database
+#     influxdb_database:
+#       hostname: "{{ automated_docker_influxdb_hostname | default('localhost') }}"
+#       hostname: "{{ automated_docker_influxdb_port | default(8086) }}"
+#       username: "{{ automated_docker_influxdb_admin_username | default(omit) }}"
+#       password: "{{ automated_docker_influxdb_admin_password | default(omit) }}"
+#       database_name: "{{ item }}"
+#       state: present
+#     delegate_to: "{{ automated_docker_run.name }}"
+#     with_items: "{{ automated_docker_influxdb_database_created | default([]) }}"
