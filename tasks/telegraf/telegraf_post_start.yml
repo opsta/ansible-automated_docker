@@ -24,6 +24,7 @@
   - name: Install python
     raw: apk update && apk add python
     delegate_to: "{{ automated_docker_run.name }}"
+    when: automated_docker_create_result.changed
 
   - name: Copy telegraf configuration file
     copy:
