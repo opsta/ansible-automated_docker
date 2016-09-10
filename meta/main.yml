@@ -14,4 +14,4 @@ galaxy_info:
     - configuration
     - container
 dependencies:
-  - { role: 'winggundamth.docker_machine', docker_machine_manage_config: true }
+  - { role: 'opsta.docker_machine', docker_machine_manage_config: true }
