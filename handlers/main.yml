@@ -21,11 +21,12 @@
   delegate_to: "{{ automated_docker_run.name }}"
   notify: Reload nginx
 
-# Don't know why but service module is not working inside the container
-# So use command to reload service instead
+# NOTE Should use docker_container module instead
 - name: Reload nginx
-  command: service nginx reload
-  delegate_to: "{{ automated_docker_run.name }}"
+  command: "docker kill -s HUP {{ automated_docker_run.name }}"
+  environment: "{{ automated_docker_machine_environment | default({}) }}"
+  vars:
+    ansible_python_interpreter: python
 
 
 # Handlers for HAProxy container

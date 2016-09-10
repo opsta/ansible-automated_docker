@@ -19,6 +19,14 @@
     when: automated_docker_nginx_config_check.results[0].stat is defined
 
 
+- block: # Prepare container
+
+  - name: Install python
+    raw: apk update && apk add python
+    delegate_to: "{{ automated_docker_run.name }}"
+    when: automated_docker_create_result.changed
+
+
 - block: # Copy all configuration files to nginx container
 
   # TODO Still need to delete and recreate directory again until
