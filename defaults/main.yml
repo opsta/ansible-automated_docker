@@ -93,7 +93,7 @@ automated_docker_registry_host_config_file_path: "{{ playbook_dir }}/files/group
 automated_docker_registry_host_config_file_paths: []
 automated_docker_registry_container_config_file_path: /etc/docker/registry/config.yml
 automated_docker_registry_host_auth_token_rootcertbundle_file_path: "{{ role_path }}/files/gitlab/registry-auth.crt"
-automated_docker_registry_config_example_url: https://raw.githubusercontent.com/docker/distribution-library-image/v2.4.1/registry/config-example.yml
+automated_docker_registry_config_example_url: https://raw.githubusercontent.com/docker/distribution-library-image/master/registry/config-example.yml
 automated_docker_registry_config_example_tmp_path: /tmp/docker-registry-config-example.yml
 
 
