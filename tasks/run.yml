@@ -6,12 +6,20 @@
       automated_docker_run: "{{ automated_docker_container_default[automated_docker_container.key] | default({}) | combine(automated_docker_container.value) }}"
 
 
+- block: # Pull image
+
+  - name: Pull "{{ automated_docker_run.image }}"
+    docker_image:
+      name: "{{ automated_docker_run.image }}"
+      force: "{{ automated_docker_run.pull | default(automated_docker_container_default_pull) }}"
+
+
 - block: # Pre-upgrade container
 
-  # TODO Change to use docker_container action when state: stopped is fix
-  # https://github.com/ansible/ansible-modules-core/issues/4199
   - name: Stop "{{ automated_docker_run.name }}" container in case of upgrade
-    command: "docker stop {{ automated_docker_run.name }}"
+    docker_container:
+      name: "{{ automated_docker_run.name }}"
+      state: stopped
     when: automated_docker_run.upgrade is defined and automated_docker_run.upgrade
 
   - name: Set container stopped name variable
@@ -26,21 +34,13 @@
 
 - block: # Run Docker container
 
-  # TODO Until these has been fixed
-  # https://github.com/ansible/ansible-modules-core/issues/4116
-  # https://github.com/ansible/ansible/issues/7367
-  - name: Work around to fix problem on Docker for Mac public beta (Maybe take sometimes from pulling docker image)
-    command: "docker run --rm=true --entrypoint true {{ automated_docker_run.image }}"
-    when: ansible_system == 'Darwin'
-
-  - name: Create "{{ automated_docker_run.name }}" container if not exists
+  - name: Create "{{ automated_docker_run.name }}" container
     docker_container:
       name: "{{ automated_docker_run.name }}"
       hostname: "{{ automated_docker_run.hostname }}"
       image: "{{ automated_docker_run.image }}"
       restart_policy: "{{ automated_docker_run.restart_policy | default(automated_docker_container_default_restart_policy) }}"
       recreate: "{{ automated_docker_run.recreate | default(automated_docker_container_default_recreate) }}"
-      pull: "{{ automated_docker_run.pull | default(automated_docker_container_default_pull) }}"
       user: "{{ automated_docker_run.user | default(omit) }}"
       entrypoint: "{{ automated_docker_run.entrypoint | default(omit) }}"
       command: "{{ automated_docker_run.command | default(omit) }}"
