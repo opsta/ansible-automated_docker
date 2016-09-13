@@ -1,7 +1,7 @@
 ---
 automated_docker_container_default:
   docker_registry:
-    image: registry:2.5.0
+    image: registry:2.5.1
     name: docker-registry
     hostname: docker-registry
     published_ports:
