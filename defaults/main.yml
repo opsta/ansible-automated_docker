@@ -1,6 +1,4 @@
 ---
-# TODO group_names need more process
-
 #automated_docker_name: sample-image
 #autoamted_docker_action: backup
 automated_docker_action_custom_file_path: "{{ role_path }}/tasks/{{ automated_docker_name }}/{{ automated_docker_container.key }}_action_{{ automated_docker_action }}.yml"
@@ -11,6 +9,9 @@ automated_docker_machine_environment_pre:
   DOCKER_HOST: "{{ automated_docker_host.stdout }}"
   DOCKER_CERT_PATH: "{{ automated_docker_cert_path }}"
   DOCKER_MACHINE_NAME: "{{ inventory_hostname }}"
+
+automated_docker_search_config_path: "{{ playbook_dir }}/files/groups/{{ item }}/{{ automated_docker_container.key }}"
+automated_docker_search_config_paths: []
 
 automated_docker_openstack_environment:
   CINDER_ENDPOINT_TYPE: "{{ lookup('env','CINDER_ENDPOINT_TYPE') | default(omit) }}"
@@ -29,7 +30,7 @@ automated_docker_openstack_environment:
 
 # Default variables for docker utilities image
 automated_docker_utilities_image_pull: no
-automated_docker_utilities_image: winggundamth/utilities:xenial
+automated_docker_utilities_image: opsta/utilities:1.0-xenial-20160818
 automated_docker_utilities_container_name: "{{ automated_docker_run.name }}-utilities"
 
 # Default variables for load balancer
@@ -57,8 +58,7 @@ automated_docker_container_default_recreate: no
 
 
 # Default variables for Nginx
-automated_docker_nginx_host_config_file_path: "{{ playbook_dir }}/files/groups/{{ item }}/{{ automated_docker_container.key }}/nginx.conf"
-automated_docker_nginx_host_config_file_paths: []
+automated_docker_nginx_host_config_file_path: "{{ automated_docker_host_config_path | default('') }}/nginx.conf"
 automated_docker_nginx_config_path: /etc/nginx
 automated_docker_nginx_config_backup_path: /etc/nginx.bak
 
