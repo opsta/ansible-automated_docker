@@ -9,6 +9,12 @@
 
 - block: # Prepare container
 
+  - name: Create nginx configuration backup directory
+    file:
+      path: /var/lib/nginx/cache
+      state: directory
+    delegate_to: "{{ automated_docker_run.name }}"
+
   - name: Install python and rsync
     raw: "python --version || (apk update && apk add python) &&
       rsync --version || apk add rsync"
