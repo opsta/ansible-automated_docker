@@ -1,30 +1,18 @@
 ---
-- block: # Check and register for influxdb configuration file
-
-  - name: Set list of path to look for influxdb configuration file
-    set_fact:
-      automated_docker_influxdb_host_config_file_paths: "{{ automated_docker_influxdb_host_config_file_paths }} + [ '{{ automated_docker_influxdb_host_config_file_path }}' ]"
-    with_items: "{{ group_names }}"
+- block: # Check for influxdb.conf
 
   - name: Check if influxdb configuration file is exists
     stat:
-      path: "{{ item }}"
+      path: "{{ automated_docker_influxdb_host_config_file_path }}"
     register: automated_docker_influxdb_config_check
-    with_first_found:
-      - files: "{{ automated_docker_influxdb_host_config_file_paths }}"
-        skip: true
-  - name: Set influxdb configuration file path
-    set_fact:
-      automated_docker_influxdb_config_stat: "{{ automated_docker_influxdb_config_check.results[0].stat }}"
-    when: automated_docker_influxdb_config_check.results[0].stat is defined
 
 
 - block: # Copy all configuration files to influxdb container
 
   - name: Install python
-    raw: apk update && apk add python
+    raw: python --version || (apk update && apk add python)
     delegate_to: "{{ automated_docker_run.name }}"
-    when: automated_docker_create_result.changed
+    when: automated_docker_influxdb_config_check.stat.exists
 
   - name: Create admin user
     command: "influx -execute \"
@@ -39,14 +27,13 @@
 
   - name: Copy influxdb configuration file
     copy:
-      src: "{{ automated_docker_influxdb_config_stat.path | dirname }}/"
+      src: "{{ automated_docker_influxdb_host_config_file_path }}/"
       dest: "{{ automated_docker_influxdb_config_path }}/"
     delegate_to: "{{ automated_docker_run.name }}"
-    when: |
-      automated_docker_influxdb_config_stat is defined and
-      automated_docker_influxdb_config_stat.exists == true
+    when: automated_docker_influxdb_config_check.stat.exists
     notify: Restart container
 
+# TODO Create databases
 # - block: # Create database
 #
 #   - name: Create database

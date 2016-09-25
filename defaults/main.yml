@@ -269,13 +269,11 @@ automated_docker_fluentd_config_branch_name: master
 automated_docker_fluentd_config_path: /etc/td-agent/conf
 
 # Default variables for Telegraf
-automated_docker_telegraf_host_config_file_path: "{{ playbook_dir }}/files/groups/{{ item }}/{{ automated_docker_container.key }}/telegraf.conf"
-automated_docker_telegraf_host_config_file_paths: []
+automated_docker_telegraf_host_config_file_path: "{{ automated_docker_host_config_path | default('') }}/telegraf.conf"
 automated_docker_telegraf_config_path: /etc/telegraf
 
 # Default variables for InfluxDB
-automated_docker_influxdb_host_config_file_path: "{{ playbook_dir }}/files/groups/{{ item }}/{{ automated_docker_container.key }}/influxdb.conf"
-automated_docker_influxdb_host_config_file_paths: []
+automated_docker_influxdb_host_config_file_path: "{{ automated_docker_host_config_path | default('') }}/influxdb.conf"
 automated_docker_influxdb_config_path: /etc/influxdb
 #automated_docker_influxdb_admin_username: admin
 #automated_docker_influxdb_admin_password: CHANGEME

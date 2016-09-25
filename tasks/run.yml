@@ -60,10 +60,10 @@
   - name: Create "{{ automated_docker_run.name }}" container
     docker_container:
       name: "{{ automated_docker_run.name }}"
-      hostname: "{{ automated_docker_run.hostname }}"
       image: "{{ automated_docker_run.image }}"
       restart_policy: "{{ automated_docker_run.restart_policy | default(automated_docker_container_default_restart_policy) }}"
       recreate: "{{ automated_docker_run.recreate | default(automated_docker_container_default_recreate) }}"
+      hostname: "{{ automated_docker_run.hostname | default(omit) }}"
       user: "{{ automated_docker_run.user | default(omit) }}"
       entrypoint: "{{ automated_docker_run.entrypoint | default(omit) }}"
       command: "{{ automated_docker_run.command | default(omit) }}"

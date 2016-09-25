@@ -1,37 +1,23 @@
 ---
-- block: # Check and register for telegraf configuration file
-
-  - name: Set list of path to look for telegraf configuration file
-    set_fact:
-      automated_docker_telegraf_host_config_file_paths: "{{ automated_docker_telegraf_host_config_file_paths }} + [ '{{ automated_docker_telegraf_host_config_file_path }}' ]"
-    with_items: "{{ group_names }}"
+- block: # Check for telegraf.conf
 
   - name: Check if telegraf configuration file is exists
     stat:
-      path: "{{ item }}"
+      path: "{{ automated_docker_telegraf_host_config_file_path }}"
     register: automated_docker_telegraf_config_check
-    with_first_found:
-      - files: "{{ automated_docker_telegraf_host_config_file_paths }}"
-        skip: true
-  - name: Set telegraf configuration file path
-    set_fact:
-      automated_docker_telegraf_config_stat: "{{ automated_docker_telegraf_config_check.results[0].stat }}"
-    when: automated_docker_telegraf_config_check.results[0].stat is defined
 
 
 - block: # Copy all configuration files to telegraf container
 
   - name: Install python
-    raw: apk update && apk add python
+    raw: python --version || (apk update && apk add python)
     delegate_to: "{{ automated_docker_run.name }}"
-    when: automated_docker_create_result.changed
+    when: automated_docker_telegraf_config_check.stat.exists
 
   - name: Copy telegraf configuration file
     copy:
-      src: "{{ automated_docker_telegraf_config_stat.path | dirname }}/"
+      src: "{{ automated_docker_telegraf_host_config_file_path }}/"
       dest: "{{ automated_docker_telegraf_config_path }}/"
     delegate_to: "{{ automated_docker_run.name }}"
-    when: |
-      automated_docker_telegraf_config_stat is defined and
-      automated_docker_telegraf_config_stat.exists == true
+    when: automated_docker_telegraf_config_check.stat.exists
     notify: Restart container

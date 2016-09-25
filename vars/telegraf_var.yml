@@ -3,9 +3,12 @@ automated_docker_container_default:
   telegraf:
     image: telegraf:1.0.0-alpine
     name: telegraf
-    hostname: telegraf
-    # NOTE network_mode has bug that will recreate container all the time
+    # NOTE Must not specify hostname with network_mode: host
+    # or else container will be recreated every time
+    # See information here
     # https://github.com/ansible/ansible-modules-core/issues/4748
+    # If you want to use custom hostname, use environment variable instead
+    # hostname: telegraf
     network_mode: host
     volumes:
       # Get these volumes from here
@@ -21,6 +24,8 @@ automated_docker_container_default:
       HOST_PROC: /rootfs/proc
       HOST_SYS: /rootfs/sys
       HOST_ETC: /rootfs/etc
+      # HOST_NAME: USE_THIS_IN_CONFIG_FILE
+      # INFLUXDB_PASSWORD: CHANGEME
     # published_ports:
       # TCP and UDP listener
       # - "8092:8092/udp"
