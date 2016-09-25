@@ -9,8 +9,9 @@
 
 - block: # Copy all configuration files to telegraf container
 
-  - name: Install python
-    raw: python --version || (apk update && apk add python)
+  - name: Install python and ca-certificates
+    raw: "python --version || (apk update && apk add python) &&
+      test -d /etc/ssl/certs || apk add ca-certificates"
     delegate_to: "{{ automated_docker_run.name }}"
     when: automated_docker_telegraf_config_check.stat.exists
 
