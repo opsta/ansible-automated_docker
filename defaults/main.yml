@@ -239,28 +239,48 @@ automated_docker_jenkins_master_host_tmp_config_path: "/tmp/container-jenkins-ma
 automated_docker_jenkins_master_templates_path: "{{ automated_docker_jenkins_templates_path }}/jenkins-slave-{{ automated_docker_jenkins_config_filename }}.j2"
 automated_docker_jenkins_master_templates_tmp_path: "/tmp/container-jenkins-slave-{{ automated_docker_jenkins_config_filename }}"
 
+# Default variables for Sensu
+automated_docker_sensu_rabbitmq_host: rabbitmq
+automated_docker_sensu_rabbitmq_vhost: /sensu
+automated_docker_sensu_rabbitmq_username: sensu
+automated_docker_sensu_rabbitmq_password: CHANGEME
+automated_docker_sensu_json_templates:
+  - src: "sensu-config.json.j2"
+    dest: "{{ automated_docker_sensu_host_tmp_config_path }}/container-{{ inventory_hostname }}-sensu-config.json"
+automated_docker_sensu_paths:
+  - src: "{{ automated_docker_sensu_host_tmp_config_path }}/container-{{ inventory_hostname }}-sensu-config.json"
+    dest: "{{ automated_docker_sensu_container_config_path }}/config.json"
+automated_docker_sensu_host_tmp_config_path: /tmp
+automated_docker_sensu_container_config_path: /etc/sensu
+
+# Default variables for Sensu Server
+automated_docker_sensu_server_redis_host: redis
+automated_docker_sensu_server_api_host: sensu-api
+automated_docker_sensu_server_api_port: 4567
+
 # Default variables for Sensu Client
 automated_docker_sensu_client_name: "{{ inventory_hostname }}"
 automated_docker_sensu_client_subscriptions:
   - application
   - service
 automated_docker_sensu_client_subscriptions_joined: "\"{{ '\", \"'.join(automated_docker_sensu_client_subscriptions)}}\""
-#automated_docker_sensu_client_rabbitmq_host: 172.17.0.1
-automated_docker_sensu_client_rabbitmq_vhost: /sensu
-automated_docker_sensu_client_rabbitmq_username: sensu
-automated_docker_sensu_client_rabbitmq_password: CHANGEME
-automated_docker_sensu_client_host_tmp_config_path: /tmp
-automated_docker_sensu_client_container_config_path: /etc/sensu
 automated_docker_sensu_client_json_templates:
-  - src: "sensu-config.json.j2"
-    dest: "{{ automated_docker_sensu_client_host_tmp_config_path }}/container-{{ inventory_hostname }}-sensu-config.json"
   - src: "sensu-client.json.j2"
-    dest: "{{ automated_docker_sensu_client_host_tmp_config_path }}/container-{{ inventory_hostname }}-sensu-client.json"
+    dest: "{{ automated_docker_sensu_host_tmp_config_path }}/container-{{ inventory_hostname }}-sensu-client.json"
 automated_docker_sensu_client_paths:
-  - src: "{{ automated_docker_sensu_client_host_tmp_config_path }}/container-{{ inventory_hostname }}-sensu-config.json"
-    dest: "{{ automated_docker_sensu_client_container_config_path }}/config.json"
-  - src: "{{ automated_docker_sensu_client_host_tmp_config_path }}/container-{{ inventory_hostname }}-sensu-client.json"
-    dest: "{{ automated_docker_sensu_client_container_config_path }}/conf.d/client.json"
+  - src: "{{ automated_docker_sensu_host_tmp_config_path }}/container-{{ inventory_hostname }}-sensu-client.json"
+    dest: "{{ automated_docker_sensu_container_config_path }}/conf.d/client.json"
+
+# Default variables for Sensu Uchiwa
+automated_docker_sensu_uchiwa_name: Site 1
+automated_docker_sensu_uchiwa_host: 172.17.0.1
+automated_docker_sensu_uchiwa_port: 4567
+automated_docker_sensu_uchiwa_json_templates:
+  - src: "sensu-uchiwa.json.j2"
+    dest: "{{ automated_docker_sensu_host_tmp_config_path }}/container-{{ inventory_hostname }}-sensu-uchiwa.json"
+automated_docker_sensu_uchiwa_paths:
+  - src: "{{ automated_docker_sensu_host_tmp_config_path }}/container-{{ inventory_hostname }}-sensu-uchiwa.json"
+    dest: "{{ automated_docker_sensu_container_config_path }}/uchiwa.json"
 
 # Default variables for Fluentd
 # NOTE automated_docker_fluentd_config_repository is defined if you need to install fluentd container

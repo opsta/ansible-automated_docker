@@ -3,7 +3,7 @@ automated_docker_container_default:
   sensu_client:
     name: "sensu-client"
     hostname: "sensu-client"
-    image: "winggundamth/sensu-client:xenial"
+    image: "opsta/sensu-client:xenial"
     published_ports:
       - "3030:3030"
     volumes:
