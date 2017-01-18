@@ -1,7 +1,7 @@
 ---
 automated_docker_container_default:
   telegraf:
-    image: telegraf:1.0.0-alpine
+    image: telegraf:1.1.2-alpine
     name: telegraf
     # NOTE Must not specify hostname with network_mode: host
     # or else container will be recreated every time

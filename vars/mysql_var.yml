@@ -1,7 +1,7 @@
 ---
 automated_docker_container_default:
   mysql:
-    image: mysql:5.6.32
+    image: mysql:5.7.17
     name: mysql
     hostname: mysql
     # published_ports:

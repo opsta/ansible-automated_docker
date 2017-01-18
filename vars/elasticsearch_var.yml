@@ -1,7 +1,7 @@
 ---
 automated_docker_container_default:
   elasticsearch:
-    image: elasticsearch:2.4.0
+    image: elasticsearch:5.1.2-alpine
     name: elasticsearch
     hostname: elasticsearch
     command: elasticsearch -Des.cluster.name="{{ automated_docker_elasticsearch_cluster_name }}"

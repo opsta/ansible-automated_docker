@@ -1,7 +1,7 @@
 ---
 automated_docker_container_default:
   haproxy:
-    image: haproxy:1.6.7-alpine
+    image: haproxy:1.7.2-alpine
     name: haproxy
     hostname: haproxy
     restart_policy: always

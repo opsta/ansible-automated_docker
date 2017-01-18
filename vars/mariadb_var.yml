@@ -1,7 +1,7 @@
 ---
 automated_docker_container_default:
   mariadb:
-    image: mariadb:10.1.16
+    image: mariadb:10.1.20
     name: mariadb
     hostname: mariadb
     # published_ports:

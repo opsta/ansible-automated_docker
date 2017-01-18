@@ -1,7 +1,7 @@
 ---
 automated_docker_container_default:
   influxdb:
-    image: influxdb:1.0.0-alpine
+    image: influxdb:1.1.1-alpine
     name: influxdb
     hostname: influxdb
     volumes:

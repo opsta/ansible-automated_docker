@@ -1,7 +1,7 @@
 ---
 automated_docker_container_default:
   gitlab:
-    image: sameersbn/gitlab:8.11.5
+    image: sameersbn/gitlab:8.15.4
     name: "{{ automated_docker_gitlab_container_name }}"
     hostname: "{{ automated_docker_gitlab_container_name }}"
     links:
@@ -27,7 +27,7 @@ automated_docker_container_default:
       SSL_REGISTRY_KEY_PATH: /home/git/data/registry-auth.key
       SSL_REGISTRY_CERT_PATH: /home/git/data/registry-auth.crt
   postgresql:
-    image: postgres:9.5.4
+    image: postgres:9.6.1
     name: "{{ automated_docker_gitlab_postgresql_container_name }}"
     hostname: "{{ automated_docker_gitlab_postgresql_container_name }}"
     env:
@@ -37,7 +37,7 @@ automated_docker_container_default:
     extensions:
       - pg_trgm
   redis:
-    image: redis:3.2.3-alpine
+    image: redis:3.2.6-alpine
     name: "{{ automated_docker_gitlab_redis_container_name }}"
     hostname: "{{ automated_docker_gitlab_redis_container_name }}"
   docker_registry:

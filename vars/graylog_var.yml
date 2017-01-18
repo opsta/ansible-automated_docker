@@ -1,7 +1,7 @@
 ---
 automated_docker_container_default:
   graylog:
-    image: graylog2/server:2.0.3-2
+    image: graylog2/server:2.1.2-1
     name: "{{ automated_docker_graylog_container_name }}"
     hostname: "{{ automated_docker_graylog_container_name }}"
     links:
@@ -29,7 +29,7 @@ automated_docker_container_default:
       GRAYLOG_ROOT_PASSWORD_SHA2: CHANGEME
       GRAYLOG_REST_TRANSPORT_URI: "http://{{ ansible_host | default('172.17.0.1') }}:12900"
   elasticsearch:
-    image: elasticsearch:2.3.4
+    image: elasticsearch:2.3.5
     name: "{{ automated_docker_graylog_elasticsearch_container_name }}"
     hostname: "{{ automated_docker_graylog_elasticsearch_container_name }}"
     command: elasticsearch -Des.cluster.name="{{ automated_docker_graylog_elasticsearch_cluster_name }}"
@@ -39,7 +39,7 @@ automated_docker_container_default:
     #   - "9200:9200"
     #   - "9300:9300"
   mongo:
-    image: mongo:3.3.10
+    image: mongo:3.4.1
     name: "{{ automated_docker_graylog_mongo_container_name }}"
     hostname: "{{ automated_docker_graylog_mongo_container_name }}"
     # published_ports:
