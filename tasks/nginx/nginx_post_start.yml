@@ -15,7 +15,7 @@
     delegate_to: "{{ automated_docker_run.name }}"
     when: automated_docker_nginx_config_check.stat.exists
 
-  - name: Create nginx configuration backup directory
+  - name: Create nginx cache directory
     file:
       path: /var/lib/nginx/cache
       state: directory
