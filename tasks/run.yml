@@ -24,9 +24,10 @@
   - name: Set "{{ automated_docker_run.image }}" configuration directory
     set_fact:
       automated_docker_host_config_path: "{{ automated_docker_config_check.results[0].stat.path }}"
-    when: |
-      automated_docker_config_check.results[0].stat is defined and
-      automated_docker_config_check.results[0].stat.isdir
+    when:
+      - not automated_docker_config_check
+      - automated_docker_config_check.results[0].stat is defined
+      - automated_docker_config_check.results[0].stat.isdir
 
 
 - block: # Pull image
