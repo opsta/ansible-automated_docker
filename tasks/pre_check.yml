@@ -20,7 +20,7 @@
 
 - name: Set Docker extra arguments variable
   set_fact:
-    automated_docker_extra_args: --tlsverify --tlscacert="{{ automated_docker_cert_path }}/ca.pem" --tlscert="{{ automated_docker_cert_path }}/cert.pem" --tlskey="{{ automated_docker_cert_path }}/key.pem" -H="{{ automated_docker_host.stdout }}"
+    automated_docker_extra_args: "--tlsverify --tlscacert={{ automated_docker_cert_path }}/ca.pem --tlscert={{ automated_docker_cert_path }}/cert.pem --tlskey={{ automated_docker_cert_path }}/key.pem -H={{ automated_docker_host.stdout }}"
   when: inventory_hostname != 'localhost'
 
 - name: Include docker container variables
