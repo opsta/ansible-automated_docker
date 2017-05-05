@@ -1,7 +1,7 @@
 ---
 automated_docker_container_default:
   jenkins:
-    image: jenkins:2.32.1-alpine
+    image: jenkins:2.46.2-alpine
     name: jenkins
     hostname: jenkins
     published_ports:

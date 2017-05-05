@@ -1,7 +1,7 @@
 ---
 automated_docker_container_default:
   postgresql:
-    image: postgres:9.6.2
+    image: postgres:9.6.2-alpine
     name: postgresql
     hostname: postgresql
     # published_ports:

@@ -1,7 +1,7 @@
 ---
 automated_docker_container_default:
   gitlab:
-    image: sameersbn/gitlab:9.0.0
+    image: sameersbn/gitlab:9.1.2
     name: "{{ automated_docker_gitlab_container_name }}"
     hostname: "{{ automated_docker_gitlab_container_name }}"
     links:
@@ -41,7 +41,7 @@ automated_docker_container_default:
     name: "{{ automated_docker_gitlab_redis_container_name }}"
     hostname: "{{ automated_docker_gitlab_redis_container_name }}"
   docker_registry:
-    image: registry:2.6.0
+    image: registry:2.6.1
     name: "{{ automated_docker_gitlab_registry_container_name }}"
     hostname: "{{ automated_docker_gitlab_registry_container_name }}"
     published_ports:

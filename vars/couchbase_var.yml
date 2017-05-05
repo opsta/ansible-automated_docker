@@ -1,7 +1,7 @@
 ---
 automated_docker_container_default:
   couchbase:
-    image: couchbase:community-4.1.0
+    image: couchbase:community-4.5.1
     name: couchbase
     hostname: couchbase
     ulimits:

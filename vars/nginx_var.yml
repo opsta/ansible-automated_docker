@@ -1,7 +1,7 @@
 ---
 automated_docker_container_default:
   nginx:
-    image: nginx:1.11.8-alpine
+    image: nginx:1.13.0-alpine
     name: nginx
     hostname: nginx
     published_ports:
