@@ -25,7 +25,7 @@
     set_fact:
       automated_docker_host_config_path: "{{ automated_docker_config_check.results[0].stat.path }}"
     when:
-      - not automated_docker_config_check
+      - automated_docker_config_check.results[0] is defined
       - automated_docker_config_check.results[0].stat is defined
       - automated_docker_config_check.results[0].stat.isdir
 
