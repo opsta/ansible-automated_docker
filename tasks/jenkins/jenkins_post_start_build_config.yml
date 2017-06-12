@@ -24,7 +24,9 @@
   - name: Set jenkins "{{ automated_docker_jenkins_config_filename }}" file path
     set_fact:
       automated_docker_jenkins_config_stat: "{{ automated_docker_jenkins_config_check.results[0].stat }}"
-    when: automated_docker_jenkins_config_check.results[0].stat is defined
+    when:
+      - not automated_docker_jenkins_config_check.skipped
+      - automated_docker_jenkins_config_check.results[0].stat is defined
 
 - block: # Copy jenkins configuration file
 
