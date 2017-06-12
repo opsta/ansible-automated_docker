@@ -19,7 +19,9 @@
   - name: Set docker registry configuration file path
     set_fact:
       automated_docker_registry_config_stat: "{{ automated_docker_registry_config_check.results[0].stat }}"
-    when: automated_docker_registry_config_check.results[0].stat is defined
+    when:
+      - not automated_docker_registry_config_check.skipped
+      - automated_docker_registry_config_check.results[0].stat is defined
 
 
 - block: # Copy docker registry configuration and certificate file

@@ -16,7 +16,9 @@
   - name: Set jenkins ssh key path
     set_fact:
       automated_docker_jenkins_sshkey_stat: "{{ automated_docker_jenkins_sshkey_check.results[0].stat }}"
-    when: automated_docker_jenkins_sshkey_check.results[0].stat is defined
+    when:
+      - not automated_docker_jenkins_sshkey_check.skipped
+      - automated_docker_jenkins_sshkey_check.results[0].stat is defined
 
 - block: # Copy SSH key
 
